@@ -1,5 +1,18 @@
 # Business Model and Open Source Strategy
 
+## Business Model
+
+This document outlines the business model and monetization strategy for the Golf Tournament Organizer Application.
+
+## Limited Initial Access Strategy
+
+To create a sense of exclusivity and ensure optimal performance during our launch phase, we're implementing a controlled access approach:
+
+- **Only 100 Organizer Accounts**: Limited to tournament directors and club managers
+- **Only 900 Player Accounts**: Available for tournament participants
+
+This "Founding Members Program" creates scarcity while allowing us to provide a high-quality experience and gather valuable feedback. Once these limits are reached, we'll implement a waitlist system where existing users can sponsor new users for priority access.
+
 ## Open Source Approach: Open Core Model
 
 After careful analysis of the codebase and project requirements, the recommended approach is an **Open Core Model**:

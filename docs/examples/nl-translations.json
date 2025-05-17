@@ -1,0 +1,161 @@
+{
+  "common": {
+    "navigation": {
+      "home": "Home",
+      "tournaments": "Toernooien",
+      "scoring": "Scores",
+      "leaderboard": "Scorebord",
+      "profile": "Profiel",
+      "settings": "Instellingen"
+    },
+    "actions": {
+      "save": "Opslaan",
+      "cancel": "Annuleren",
+      "edit": "Bewerken",
+      "delete": "Verwijderen",
+      "confirm": "Bevestigen",
+      "back": "Terug",
+      "next": "Volgende"
+    },
+    "status": {
+      "loading": "Laden...",
+      "saving": "Opslaan...",
+      "error": "Er is een fout opgetreden",
+      "success": "Succes!",
+      "offline": "Je bent offline",
+      "syncing": "Gegevens synchroniseren..."
+    },
+    "languages": {
+      "en": "Engels",
+      "nl": "Nederlands",
+      "language": "Taal",
+      "changeLanguage": "Taal wijzigen"
+    },
+    "dateFormats": {
+      "short": "{{date, DD-MM-YYYY}}",
+      "long": "{{date, D MMMM YYYY}}",
+      "time": "{{time, HH:mm}}"
+    }
+  },
+  "auth": {
+    "login": "Inloggen",
+    "register": "Registreren",
+    "forgotPassword": "Wachtwoord vergeten?",
+    "email": "E-mail",
+    "password": "Wachtwoord",
+    "confirmPassword": "Bevestig wachtwoord",
+    "fullName": "Volledige naam",
+    "logout": "Uitloggen",
+    "resetPassword": "Wachtwoord resetten",
+    "newPassword": "Nieuw wachtwoord"
+  },
+  "tournaments": {
+    "create": "Toernooi aanmaken",
+    "manage": "Toernooi beheren",
+    "details": "Toernooi details",
+    "name": "Toernooi naam",
+    "date": "Datum",
+    "startDate": "Startdatum",
+    "endDate": "Einddatum",
+    "location": "Locatie",
+    "format": "Format",
+    "organizer": "Organisator",
+    "status": {
+      "upcoming": "Aankomend",
+      "active": "Actief",
+      "completed": "Voltooid",
+      "cancelled": "Geannuleerd"
+    },
+    "formatTypes": {
+      "strokePlay": "Strokeplay",
+      "stableford": "Stableford",
+      "matchPlay": "Matchplay",
+      "bestBall": "Best Ball"
+    }
+  },
+  "players": {
+    "manage": "Spelers beheren",
+    "add": "Speler toevoegen",
+    "edit": "Speler bewerken",
+    "remove": "Speler verwijderen",
+    "details": "Speler details",
+    "name": "Naam",
+    "email": "E-mail",
+    "phone": "Telefoon",
+    "handicap": "Handicap",
+    "flight": "Flight",
+    "tee": "Tee",
+    "startingHole": "Starthole",
+    "status": "Status"
+  },
+  "scoring": {
+    "enterScores": "Scores invoeren",
+    "hole": "Hole",
+    "par": "Par",
+    "score": "Score",
+    "putts": "Putts",
+    "fairwayHit": "Fairway geraakt",
+    "greenInRegulation": "Green in regulation",
+    "submit": "Score indienen",
+    "totalScore": "Totale score",
+    "frontNine": "Eerste negen",
+    "backNine": "Tweede negen",
+    "verify": "Score verifiëren"
+  },
+  "leaderboard": {
+    "title": "Scorebord",
+    "position": "Pos",
+    "player": "Speler",
+    "total": "Totaal",
+    "thru": "Thru",
+    "today": "Vandaag",
+    "round": "Ronde {{round}}",
+    "refreshing": "Scorebord vernieuwen...",
+    "lastUpdated": "Laatst bijgewerkt: {{time}}",
+    "liveScoring": "Live scoring",
+    "filter": {
+      "all": "Alle spelers",
+      "flight": "Filteren op flight",
+      "following": "Spelers die ik volg"
+    }
+  },
+  "courses": {
+    "select": "Baan selecteren",
+    "create": "Baan aanmaken",
+    "details": "Baan details",
+    "name": "Naam baan",
+    "location": "Locatie",
+    "holes": "Holes",
+    "tees": "Tees",
+    "par": "Par",
+    "distance": "Afstand",
+    "searchCourses": "Banen zoeken..."
+  },
+  "settings": {
+    "title": "Instellingen",
+    "account": "Accountinstellingen",
+    "notifications": "Notificaties",
+    "appearance": "Weergave",
+    "privacy": "Privacy",
+    "language": "Taal",
+    "units": {
+      "title": "Eenheden",
+      "imperial": "Imperial (yards)",
+      "metric": "Metrisch (meters)"
+    },
+    "theme": {
+      "title": "Thema",
+      "light": "Licht",
+      "dark": "Donker",
+      "system": "Systeemstandaard"
+    }
+  },
+  "errors": {
+    "required": "Dit veld is verplicht",
+    "invalidEmail": "Voer een geldig e-mailadres in",
+    "passwordMismatch": "Wachtwoorden komen niet overeen",
+    "invalidScore": "Voer een geldige score in",
+    "networkError": "Netwerkfout. Probeer het opnieuw.",
+    "unknownError": "Er is een onbekende fout opgetreden"
+  }
+}

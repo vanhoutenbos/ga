@@ -33,6 +33,7 @@ Based on the MVP scope definition and overall strategic direction, the following
 - [ ] Implement offline storage and synchronization
 - [ ] Build player verification mechanisms
 - [ ] Develop hole navigation and score review features
+- [ ] Implement multi-language support for English and Dutch
 
 ### Leaderboard Implementation
 - [ ] Develop real-time leaderboard display using Supabase Realtime
@@ -47,6 +48,14 @@ Based on the MVP scope definition and overall strategic direction, the following
 - [ ] Implement real-time updates with Supabase
 - [ ] Set up offline synchronization mechanisms
 - [ ] Integrate authentication across components
+
+### Multi-Language Implementation
+- [ ] Set up i18n framework with react-i18next
+- [ ] Implement language detection and selection UI
+- [ ] Create translation files for English (base language)
+- [ ] Complete Dutch translations for all UI elements
+- [ ] Implement locale-specific formatting for dates, numbers, and measurements
+- [ ] Test UI rendering across both languages
 
 ### Testing and Quality Assurance
 - [ ] Develop comprehensive test suite

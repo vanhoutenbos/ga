@@ -50,12 +50,21 @@ This document serves as the central index to the planning and architecture docum
    - High-value features
    - Premium features
    - Strategy to excel
+   
+9. [Multi-Language Strategy](multi-language-strategy.md)
+   - English and Dutch support from launch
+   - Internationalization framework
+   - Translation contribution process
+   - Community expansion plan
 
 ## Future Documentation
 
-9. Risk Assessment (Planned)
-10. Integration Strategy (Planned)
-11. Supabase Implementation (Planned)
+10. Risk Assessment (Planned)
+11. Integration Strategy (Planned)
+12. Supabase Implementation (Planned)
+
+## Additional Guides
+- [Translation Contribution Guide](translation-contribution-guide.md)
 
 ## Reference: Original Documents
 - [Original Planning Notes (scribbles.md)](scribbles.md)

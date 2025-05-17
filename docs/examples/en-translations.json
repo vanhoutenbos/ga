@@ -1,0 +1,161 @@
+{
+  "common": {
+    "navigation": {
+      "home": "Home",
+      "tournaments": "Tournaments",
+      "scoring": "Scoring",
+      "leaderboard": "Leaderboard",
+      "profile": "Profile",
+      "settings": "Settings"
+    },
+    "actions": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete",
+      "confirm": "Confirm",
+      "back": "Back",
+      "next": "Next"
+    },
+    "status": {
+      "loading": "Loading...",
+      "saving": "Saving...",
+      "error": "An error occurred",
+      "success": "Success!",
+      "offline": "You are offline",
+      "syncing": "Syncing data..."
+    },
+    "languages": {
+      "en": "English",
+      "nl": "Dutch",
+      "language": "Language",
+      "changeLanguage": "Change language"
+    },
+    "dateFormats": {
+      "short": "{{date, MM/DD/YYYY}}",
+      "long": "{{date, MMMM D, YYYY}}",
+      "time": "{{time, h:mm A}}"
+    }
+  },
+  "auth": {
+    "login": "Log In",
+    "register": "Register",
+    "forgotPassword": "Forgot Password?",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "fullName": "Full Name",
+    "logout": "Log Out",
+    "resetPassword": "Reset Password",
+    "newPassword": "New Password"
+  },
+  "tournaments": {
+    "create": "Create Tournament",
+    "manage": "Manage Tournament",
+    "details": "Tournament Details",
+    "name": "Tournament Name",
+    "date": "Date",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "location": "Location",
+    "format": "Format",
+    "organizer": "Organizer",
+    "status": {
+      "upcoming": "Upcoming",
+      "active": "Active",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "formatTypes": {
+      "strokePlay": "Stroke Play",
+      "stableford": "Stableford",
+      "matchPlay": "Match Play",
+      "bestBall": "Best Ball"
+    }
+  },
+  "players": {
+    "manage": "Manage Players",
+    "add": "Add Player",
+    "edit": "Edit Player",
+    "remove": "Remove Player",
+    "details": "Player Details",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "handicap": "Handicap",
+    "flight": "Flight",
+    "tee": "Tee",
+    "startingHole": "Starting Hole",
+    "status": "Status"
+  },
+  "scoring": {
+    "enterScores": "Enter Scores",
+    "hole": "Hole",
+    "par": "Par",
+    "score": "Score",
+    "putts": "Putts",
+    "fairwayHit": "Fairway Hit",
+    "greenInRegulation": "Green in Regulation",
+    "submit": "Submit Score",
+    "totalScore": "Total Score",
+    "frontNine": "Front Nine",
+    "backNine": "Back Nine",
+    "verify": "Verify Score"
+  },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "position": "Pos",
+    "player": "Player",
+    "total": "Total",
+    "thru": "Thru",
+    "today": "Today",
+    "round": "Round {{round}}",
+    "refreshing": "Refreshing leaderboard...",
+    "lastUpdated": "Last updated: {{time}}",
+    "liveScoring": "Live Scoring",
+    "filter": {
+      "all": "All Players",
+      "flight": "Filter by Flight",
+      "following": "Players I Follow"
+    }
+  },
+  "courses": {
+    "select": "Select Course",
+    "create": "Create Course",
+    "details": "Course Details",
+    "name": "Course Name",
+    "location": "Location",
+    "holes": "Holes",
+    "tees": "Tees",
+    "par": "Par",
+    "distance": "Distance",
+    "searchCourses": "Search courses..."
+  },
+  "settings": {
+    "title": "Settings",
+    "account": "Account Settings",
+    "notifications": "Notifications",
+    "appearance": "Appearance",
+    "privacy": "Privacy",
+    "language": "Language",
+    "units": {
+      "title": "Units",
+      "imperial": "Imperial (yards)",
+      "metric": "Metric (meters)"
+    },
+    "theme": {
+      "title": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System Default"
+    }
+  },
+  "errors": {
+    "required": "This field is required",
+    "invalidEmail": "Please enter a valid email address",
+    "passwordMismatch": "Passwords do not match",
+    "invalidScore": "Please enter a valid score",
+    "networkError": "Network error. Please try again.",
+    "unknownError": "An unknown error occurred"
+  }
+}

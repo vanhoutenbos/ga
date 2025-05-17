@@ -10,9 +10,9 @@ Based on the comprehensive analysis of the project's evolution and the insights 
   - Full PWA implementation with offline capabilities
   - Service workers for background sync and caching
   - Web App Manifest for installability on devices
-  - Responsive design optimized for mobile, tablet, and desktop
-  - Modular component architecture for reusable UI elements
+  - Responsive design optimized for mobile, tablet, and desktop  - Modular component architecture for reusable UI elements
   - Device API integration for camera (QR code scanning) and geolocation
+  - Internationalization (i18n) with react-i18next for multi-language support
 
 - **Single Application with Role-Based Modules**
   - Unified codebase for scoring, viewing, and administration
@@ -451,8 +451,59 @@ For distribution through app stores while maintaining the PWA approach:
 3. **Monitoring and Analysis**
    - Implement Web Vitals tracking
    - Set up real user monitoring
-   - Create performance budgets
-   - Regular Lighthouse audits
+   - Create performance budgets   - Regular Lighthouse audits
+
+### Internationalization Architecture
+
+1. **Translation Management**
+   - JSON-based translation files organized by feature:
+     ```
+     /public/locales/
+       ├── en/                    # English (default)
+       │   ├── common.json        # Shared across app
+       │   ├── tournament.json    # Tournament-specific
+       │   └── scoring.json       # Scoring-specific
+       └── nl/                    # Dutch
+           ├── common.json
+           ├── tournament.json
+           └── scoring.json
+     ```
+   - Key-based translations with nested structure for organization
+   - Support for variable interpolation and pluralization
+
+2. **Frontend Implementation**
+   - React-i18next integration:
+     ```jsx
+     import { useTranslation } from 'react-i18next';
+     
+     function TournamentHeader({ tournament }) {
+       const { t } = useTranslation('tournament');
+       
+       return (
+         <header>
+           <h1>{t('details.title', { name: tournament.name })}</h1>
+           <p>{t('details.dateRange', { 
+             startDate: formatDate(tournament.startDate, i18n.language),
+             endDate: formatDate(tournament.endDate, i18n.language)
+           })}</p>
+         </header>
+       );
+     }
+     ```
+   - Language switcher component for user control
+   - Automatic detection based on browser settings
+   - Persistence of language preference
+
+3. **Locale-Specific Formatting**
+   - Date and time formatting via Intl.DateTimeFormat
+   - Number formatting with Intl.NumberFormat
+   - Currency display adapted to locale
+   - Measurement units conversion (yards/meters) based on locale preference
+
+4. **Right-to-Left (RTL) Support**
+   - CSS logical properties for future RTL language support
+   - Dynamic text direction based on language
+   - Component testing in both LTR and RTL contexts
 
 ### Integration Architecture
 - **External Integration Points**

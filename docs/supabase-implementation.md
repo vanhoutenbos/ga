@@ -2,6 +2,104 @@
 
 This document outlines the implementation details for using Supabase as the backend infrastructure for the Golf Tournament Organizer application. Supabase provides an open-source Firebase alternative that includes authentication, PostgreSQL database, storage, and real-time subscriptions.
 
+## Limited Initial Access Strategy
+
+To ensure optimal performance and a premium user experience during our initial launch phase, we're implementing a controlled access approach based on Supabase's free tier limitations:
+
+- **Maximum 100 Organizer Accounts**: Reserved for tournament directors and club managers
+- **Maximum 900 Player Accounts**: Available for tournament participants
+
+This limitation will be marketed as an exclusive "founding members" program, creating scarcity and urgency for early adoption. Benefits include:
+
+- Early beta access to features
+- Lifetime access to certain premium features
+- Early access to new capabilities
+- Influence on product roadmap
+- Recognition in app as founding members
+
+We'll implement a waitlist system once these limits are reached, with new users admitted as our infrastructure scales. This controlled growth ensures stability while building an engaged community of advocates.
+
+## Deployment Strategy
+
+To minimize costs while ensuring a robust implementation, we'll adopt a streamlined deployment approach:
+
+### Environments
+
+1. **Production Environment**
+   - Primary Supabase instance with maximum stability and performance
+   - Fully optimized database with proper indexes and configurations
+   - Connected to production frontend deployment
+   - Strict backup and monitoring protocols
+   - Where our 100 organizer and 900 player accounts will operate
+
+2. **Preview/Staging Slot (Optional)**
+   - Conditionally deployed when testing major releases
+   - Shares database with production but uses schema prefixing to avoid conflicts
+   - Temporary in nature - deployed for testing, then decommissioned
+   - Limited to internal testing users only
+
+3. **Local Development Environment**
+   - Individual developer instances using Supabase local development setup
+   - Docker-based local deployment for each developer
+   - Seeded with sanitized subset of production data
+   - Completely isolated from production
+
+### Cost Control Measures
+
+- **No dedicated test/staging environment** - using preview slots instead saves on database provisioning costs
+- **Containerized local development** - avoids costs of dedicated development instances
+- **Scheduled scaling** - production could scale down during low-usage periods (night hours)
+- **Careful monitoring of real-time connections** - which can drive costs up quickly
+- **Storage tier optimization** - implementing lifecycle policies to archive older tournament data
+- **Function invocation batching** - grouping edge function calls to minimize invocation counts
+
+### Implementation Approach
+
+```bash
+# Local development setup (per developer)
+git clone https://github.com/supabase/supabase
+cd supabase/docker
+docker-compose up -d
+
+# Initialize with schema and seed data
+supabase db push
+supabase db seed
+
+# Connect local application
+SUPABASE_URL=http://localhost:8000
+SUPABASE_ANON_KEY=<local_key>
+```
+
+For production deployment, we'll use Supabase's hosted platform to minimize operational overhead while focusing development resources on application features.
+
+The preview/staging slot will be implemented using a feature branch deployment approach, where each major release candidate gets a temporary frontend deployment connected to a schema-prefixed section of the production database.
+
+### Migration Approach
+
+When migrating between environments:
+
+1. **Development to Staging/Preview**:
+   ```sql
+   -- Create prefixed schema for preview
+   CREATE SCHEMA preview_v1;
+   
+   -- Duplicate structure (without data)
+   CREATE TABLE preview_v1.tournaments (LIKE public.tournaments INCLUDING ALL);
+   -- Repeat for all tables
+   
+   -- Seed with minimal test data
+   INSERT INTO preview_v1.tournaments (...)
+   VALUES (...);
+   ```
+
+2. **Staging to Production**:
+   - Database migrations using Supabase migrations tool
+   - Incremental and reversible migrations only
+   - Applied during scheduled maintenance windows
+   - Thoroughly tested on local environments first
+
+This approach balances development efficiency with cost control by eliminating unnecessary environments and leveraging Supabase's local development capabilities.
+
 ## Why Supabase for This Project
 
 Supabase offers several advantages that align with the Golf Tournament Organizer requirements:

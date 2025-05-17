@@ -28,6 +28,8 @@ The Golf Tournament Organizer Application aims to revolutionize how golf tournam
 
 - **Seamless Experience**: Deliver a cohesive experience across web and mobile platforms that works reliably in the unique environment of golf courses (variable connectivity, outdoor conditions).
 
+- **Inclusive Multilingual Platform**: Support Dutch and English languages from day one, with a framework for community-driven expansion to additional languages, making the platform accessible to a global audience.
+
 The application will leverage an open core model to encourage community contributions and improvements while maintaining sustainable monetization paths through premium features that deliver additional value to organizations and serious players.
 
 ## MVP Scope Definition
