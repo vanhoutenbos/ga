@@ -15,20 +15,21 @@ This "Founding Members Program" creates scarcity while allowing us to provide a 
 
 ## Open Source Approach: Open Core Model
 
-After careful analysis of the codebase and project requirements, the recommended approach is an **Open Core Model**:
+After careful analysis of the codebase and project requirements, i chose an **Open Core Model**:
 
 - **Core Platform (Open Source)**
-  - Basic tournament creation and management
-  - Standard scoring and leaderboard functionality
+  - Tournament creation and management
+  - Scoring and leaderboard functionality
   - Player registration system
   - Mobile-responsive web application
-  - Basic API integrations
+  - API integrations
+  - Analytics
+  - Statistics
   - License: **Mozilla Public License 2.0 (MPL-2.0)**
 
 - **Premium Extensions (Proprietary)**
-  - Advanced analytics and statistics
   - White-label customization for organizations
-  - Advanced reporting engines and exports
+  - Export capabilities
   - Custom advertisement capabilities
   - Data collection APIs for marketing
   - Communication tools for tournament organizers
@@ -59,13 +60,13 @@ This license prevents competitors from creating closed-source forks of core func
     - Analytics 
     - Statistics
     - Reporting
-    - Export options
     - Unlimited participants
   
   - **Premium Features (Paid tiers)**
     - Custom branding
     - Custom advertisement capabilities
     - Data collection through opt-ins
+    - Export options
     - Communication tools for participants (send email to all participants etc)
 
   - **Enterprise Features (Maybe later)**

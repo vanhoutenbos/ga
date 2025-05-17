@@ -1,4 +1,4 @@
-﻿# Golf App
+# Golf App
 
 A comprehensive golf tournament organizer application for managing, scoring, and viewing golf tournaments.
 
@@ -41,4 +41,4 @@ Community translations can be contributed following the guidelines in our [multi
 
 ## License
 
-[MIT License](LICENSE)
+[MPL License](LICENSE)
