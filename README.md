@@ -20,4 +20,4 @@ The application uses a hierarchical data structure:
 
 ## License
 
-[MIT License](LICENSE)
+[MPL License](LICENSE)
