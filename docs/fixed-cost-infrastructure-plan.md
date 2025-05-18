@@ -190,7 +190,7 @@ For your specific use case with 100 organizers and 900 players with accounts plu
 
 3. **Future Scaling Options** (Growth Phase):
    - Evaluate Azure Container Apps as a consolidated backend solution
-   - Consider containerizing both API Gateway and Function logic in a single deployment
+   - Consider containerizing Function logic in a single deployment
    - Benefit from both scale-to-zero cost savings and reduced cold starts
    - Maintain deployment simplicity with integrated CI/CD pipelines
 
@@ -207,6 +207,6 @@ While our immediate recommendation prioritizes simplicity and stability with App
 | Development   | Standard Azure services | Container expertise required |
 | Cost Range    | €53/month fixed | €30-50/month (usage-based) |
 
-Container Apps would allow consolidating the Node.js API Gateway and .NET Functions into a unified deployment model while maintaining the ability to scale to zero during quiet periods. This approach becomes more attractive as the application grows and deployment expertise matures.
+Container Apps would allow consolidating the .NET Functions into a unified deployment model while maintaining the ability to scale to zero during quiet periods. This approach becomes more attractive as the application grows and deployment expertise matures.
 
 If absolute cost minimization is more important than complete predictability, you could remain with the current model which may be cheaper during very low usage periods but carries the risk of higher costs during peak usage.

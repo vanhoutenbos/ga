@@ -166,8 +166,12 @@ Our new architecture leverages Azure services for hosting and .NET 8 backend API
 4. **Caching Strategy**
    - Client-side caching for static assets
    - CDN caching for frequent content
-   - API response caching where appropriate
    - Service worker caching for offline support
+   - **Future Caching Implementation**:
+     - Redis Cache for frequently accessed data when scaling up
+     - Output caching on Azure Functions for leaderboards and other generic data
+     - Distributed caching for session management
+     - Smart cache invalidation strategies
 
 ## Deployment and CI/CD Pipeline
 

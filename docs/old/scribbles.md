@@ -641,7 +641,7 @@ These examples demonstrate how Supabase can be utilized to handle the core tourn
 When using Supabase (hosted on AWS) alongside Azure-hosted components, there are latency considerations to address:
 
 1. **Cross-Cloud Communication**
-   - API Gateway on Azure will need to communicate with Supabase
+   - Azure Functions will need to communicate with Supabase
    - Database reads/writes will cross cloud providers 
    - Plan for 20-100ms additional latency on database operations
 
@@ -931,7 +931,7 @@ CREATE POLICY "Recorders can only update assigned flights" ON scores
 
 2. **Backend Integration**
    - Supabase PostgreSQL database with RLS
-   - Custom middleware for JWT validation in API Gateway
+   - Custom middleware for JWT validation in Azure Functions
    - API endpoints for tournament access code generation
    - Webhook handlers for auth events (signup, password reset)
 
@@ -1055,8 +1055,8 @@ Based on the comprehensive analysis of the project's evolution and the insights 
   TODO: What templates do we use!?
 
 #### Backend Architecture
-- **API Gateway**
-  - Node.js Express-based API gateway
+- **Azure Functions**
+  - .NET 8 based API services
   - JWT validation middleware for Supabase tokens
   - Request routing and load balancing
   - Caching layer for performance

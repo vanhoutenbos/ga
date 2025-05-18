@@ -232,7 +232,7 @@ CREATE POLICY "Recorders can only update assigned flights" ON scores
 
 2. **Backend Integration**
    - Supabase PostgreSQL database with RLS
-   - Custom middleware for JWT validation in API Gateway
+   - Custom middleware for JWT validation in Azure Functions
    - API endpoints for tournament access code generation
    - Webhook handlers for auth events (signup, password reset)
 

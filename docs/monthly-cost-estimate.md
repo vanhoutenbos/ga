@@ -157,7 +157,7 @@ For this fixed-cost approach, our infrastructure consists of:
      - "Always On" configuration to eliminate cold starts
      - Consistent performance for tournament days
    
-   - **Node.js Express API Gateway (App Service Basic B1)**: €13/month
+   - **Azure Functions (.NET 8 Isolated Process Model)**: €0/month (consumption plan with free grant)
      - API routing and gateway functionality
      - JWT validation and middleware
      - Caching and rate limiting
@@ -263,7 +263,7 @@ As the Golf Tournament Organizer application grows beyond its initial user base,
 #### Benefits of Container Apps for Future Growth
 
 1. **Backend Consolidation**
-   - Combine Node.js API Gateway and .NET Function logic in a single container
+   - Combine .NET Function logic in a single container for easier management
    - Eliminate the need for separate App Service and Function App resources
    - Potential cost savings of €10-15/month through consolidation
 
@@ -289,7 +289,7 @@ As the Golf Tournament Organizer application grows beyond its initial user base,
 
 ## Multi-API Architecture Analysis
 
-Our architecture includes both Node.js Express API Gateway and .NET 8 Azure Functions components. This section discusses the cost-benefit considerations of this approach:
+Our architecture uses Azure Functions (.NET 8) directly connected to Supabase for database and authentication. This section discusses the cost-benefit considerations of this approach:
 
 ### Benefits of Multi-API Architecture
 
@@ -308,7 +308,7 @@ Our architecture includes both Node.js Express API Gateway and .NET 8 Azure Func
 
 ### Cost Impact of Multi-API Architecture
 
-While our multi-API architecture increases fixed monthly costs by approximately €13 (the cost of the App Service Basic B1 tier for the Node.js Express API Gateway), this investment provides significant benefits in maintainability, security, and architectural flexibility.
+The serverless architecture using Azure Functions on a consumption plan allows for efficient cost management with the ability to scale-to-zero during inactive periods, while providing robust performance capabilities when needed.
 
 ## Premium Microservices Architecture (Future Evolution)
 
@@ -329,7 +329,7 @@ For future growth and enterprise-level scalability, an extended microservices ar
 ┌─────────────────────┐           ┌───────────────────────────┐           ┌─────────────────────┐
 │                     │           │                           │           │                     │
 │  Azure API          │◄─────────►│  Azure Container Apps     │◄─────────►│  Azure Redis Cache  │
-│  Management         │           │  - API Gateway            │           │  - Response Caching │
+│  Management         │           │  - API Services           │           │  - Response Caching │
 │  - API Documentation│           │  - Authentication         │           │  - Session Storage  │
 │  - Developer Portal │           │  - Rate Limiting          │           │  - Distributed Cache│
 │  - Subscription Mgmt│           │  - Request Routing        │           │                     │
@@ -414,8 +414,8 @@ For future growth and enterprise-level scalability, an extended microservices ar
   - API versioning and lifecycle management
   - Throttling and quota management
 
-- **Azure Container Apps (API Gateway)**: €40/month
-  - Dedicated API Gateway implementation
+- **Azure Container Apps (API Services)**: €40/month
+  - Dedicated API implementation
   - JWT validation and authorization
   - Request routing and transformation
   - Rate limiting and traffic shaping
@@ -664,7 +664,7 @@ For complete implementation of the fixed-cost approach, these infrastructure cha
 | Azure Functions | Consumption Plan | Migrate to App Service Plan B1 | High |
 | Blob Storage | Pay-as-you-go | Convert to reserved capacity (100GB) | Medium |
 | Application Insights | Uncapped collection | Implement sampling and data caps | Medium |
-| Node.js API Gateway | Basic B1 | No change required | N/A |
+| Azure Functions | Consumption Plan | No change required | N/A |
 | Azure Static Web App | Standard | No change required | N/A |
 | Azure Key Vault | Standard | No change required | N/A |
 | Supabase | Free tier | Monitor usage for potential future upgrade | Low |

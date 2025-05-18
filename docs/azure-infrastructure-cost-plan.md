@@ -451,7 +451,7 @@ Azure Container Apps is a serverless container service that enables:
 
 | Benefit | Description | Impact |
 |---------|-------------|--------|
-| **Backend Consolidation** | Combine Node.js API Gateway and .NET Functions into a single deployment unit | Simplified operations, reduced management overhead |
+| **Backend Consolidation** | Combine .NET Functions into a single deployment unit | Simplified operations, reduced management overhead |
 | **Cost Optimization** | Scale to zero during quiet periods while maintaining fast activation | Lower costs outside tournament periods |
 | **Cold Start Improvement** | Container-based activation is typically faster than Function cold starts | Better user experience during traffic spikes |
 | **Simplified Deployment** | Single container image with all backend components | Streamlined CI/CD pipeline |
@@ -461,7 +461,7 @@ Azure Container Apps is a serverless container service that enables:
 
 | Metric | Current Architecture | Container Apps | Savings Potential |
 |--------|---------------------|----------------|-------------------|
-| Base Infrastructure | €22/month (Static Web App + API Gateway) | €9/month (Static Web App only) | €13/month |
+| Base Infrastructure | €9/month (Static Web App) | €9/month (Static Web App only) | €0/month |
 | Runtime Costs | €10-50/month (Functions) | €15-40/month (Container instances) | €0-10/month |
 | Cold Start Performance | Variable (0.5-3s) | More consistent (0.3-1s) | User experience improvement |
 | Development Complexity | Lower | Moderate (container expertise) | Initial investment required |
@@ -482,7 +482,7 @@ The initial implementation can follow these steps:
    COPY ./function-components/*.csproj ./function-components/
    RUN dotnet restore ./function-components/
    
-   # Build API Gateway components
+   # Build Azure Functions components
    # ...
    
    # Create runtime image

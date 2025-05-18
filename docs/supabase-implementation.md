@@ -133,8 +133,8 @@ Supabase offers several advantages that align with the Golf Tournament Organizer
                                               │
 ┌─────────────────────┐           ┌───────────▼───────────────┐
 │                     │           │                           │
-│  API Gateway        │◄─────────►│  Supabase Platform        │
-│  (Express/Node.js)  │           │  - Auth                   │
+│  Azure Functions     │◄─────────►│  Supabase Platform        │
+│  (.NET 8)           │           │  - Auth                   │
 │                     │           │  - PostgreSQL             │
 └─────────────────────┘           │  - Realtime               │
                                   │  - Storage                │

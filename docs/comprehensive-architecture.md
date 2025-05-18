@@ -26,14 +26,14 @@ Our architecture leverages Azure services for hosting and .NET 8 backend APIs wh
                                   └───────────┬───────────────┘           └─────────────────────┘
                                               │
                                               │
-                                  ┌───────────▼───────────────┐           ┌─────────────────────┐
-                                  │                           │           │                     │
-                                  │  Supabase                 │◄─────────►│  Azure Key Vault    │
-                                  │  - Authentication         │           │  - Secrets          │
+                                  ┌───────────▼───────────────┐           ┌──────────────────────┐
+                                  │                           │           │                      │
+                                  │  Supabase                 │◄─────────►│  Azure Key Vault     │
+                                  │  - Authentication         │           │  - Secrets           │
                                   │  - PostgreSQL Database    │           │  - Connection Strings│
-                                  │  - Realtime Updates       │           │  - API Keys         │
-                                  │  - Storage                │           │                     │
-                                  └───────────────────────────┘           └─────────────────────┘
+                                  │  - Realtime Updates       │           │  - API Keys          │
+                                  │  - Storage                │           │                      │
+                                  └───────────────────────────┘           └──────────────────────┘
 ```
 
 ## Frontend Architecture
@@ -66,12 +66,12 @@ Our architecture leverages Azure services for hosting and .NET 8 backend APIs wh
 
 ## Backend Architecture
 
-### API Gateway
-- Node.js Express-based API gateway (App Service Basic B1)
+### API Services
+- Azure Functions (.NET 8) on consumption plan for cost optimization
 - JWT validation middleware for Supabase tokens
-- Request routing and load balancing
-- Caching layer for performance
-- Rate limiting for service protection
+- Automatic scaling based on demand
+- HTTP-triggered functions for all API endpoints
+- Future caching capabilities for performance optimization
 
 ### Serverless Functions
 - Azure Functions on App Service Plan B1 (always on)
@@ -139,6 +139,156 @@ Our architecture leverages Azure services for hosting and .NET 8 backend APIs wh
    - .NET backend respects same permission boundaries
    - Additional business logic validation in Function App layer
 
+## Offline Functionality and Conflict Resolution
+
+### Offline-First Approach
+
+The application implements an offline-first architecture to ensure usability in environments with intermittent connectivity, such as golf courses with limited network coverage:
+
+1. **Local Data Storage**
+   - IndexedDB for client-side data persistence
+   - Complete tournament data cached for offline access
+   - Local-first operations with background synchronization
+
+2. **Synchronization Strategy**
+   - Background sync via Service Workers
+   - Incremental sync to minimize bandwidth usage
+   - Queue-based approach for pending changes
+   - Conflict detection and resolution on reconnection
+
+3. **Conflict Resolution**
+   - Timestamp-based "last edit wins" approach for conflict resolution
+   - Special handling for official scorers' updates (priority override)
+   - Field-level merging for partial updates when possible
+   - Conflict notification for significant data discrepancies
+
+### Implementation Details
+
+The conflict resolution strategy is particularly important given the application's offline capabilities:
+
+1. **Metadata Tracking**
+   - Each record includes `updated_at` timestamp
+   - Client identifier stored with each change
+   - User role considered in conflict resolution logic
+
+2. **Resolution Process**
+   ```
+   ┌─────────────────┐         ┌─────────────────┐
+   │                 │         │                 │
+   │  Local Changes  │  Sync   │  Server Data    │
+   │  with Timestamp ├────────►│  with Timestamp │
+   │                 │         │                 │
+   └────────┬────────┘         └────────┬────────┘
+            │                           │
+            ▼                           ▼
+   ┌─────────────────────────────────────────────┐
+   │                                             │
+   │  Compare Timestamps for Same Record         │
+   │                                             │
+   └────────┬────────────────────────┬───────────┘
+            │                        │
+            ▼                        ▼
+   ┌──────────────────┐     ┌──────────────────┐
+   │                  │     │                  │
+   │  Local is Newer  │     │ Server is Newer  │
+   │                  │     │                  │
+   └────────┬─────────┘     └────────┬─────────┘
+            │                        │
+            ▼                        ▼
+   ┌──────────────────┐     ┌──────────────────┐
+   │                  │     │                  │
+   │  Apply Local     │     │  Apply Server    │
+   │  to Server       │     │  to Local        │
+   │                  │     │                  │
+   └──────────────────┘     └──────────────────┘
+   ```
+
+3. **Edge Case Handling**
+   - Special priority for tournament officials
+   - Merge strategies for non-conflicting field updates
+   - Notification system for significant conflicts
+
+For more detailed information on our conflict resolution approach, refer to the following documents:
+
+- [Conflict Resolution Strategy](conflict-resolution-strategy.md) - Core approach and implementation details
+- [Conflict Resolution Edge Cases](conflict-resolution-edge-cases.md) - Specialized handling for complex scenarios
+- [Conflict Resolution Testing](conflict-resolution-testing.md) - Comprehensive testing strategy for conflict scenarios
+
+For complete details, see our [Conflict Resolution Strategy](conflict-resolution-strategy.md) document.
+
+## Advanced Conflict Resolution Strategy
+
+The application includes a sophisticated conflict resolution strategy to handle data synchronization challenges when multiple users work with the application in offline mode. This is particularly important for tournament environments where network connectivity may be limited.
+
+### Core Conflict Resolution Approach
+
+Our primary strategy follows a "last edit wins" approach, enhanced with special handling for important edge cases:
+
+1. **Timestamp-Based Resolution**
+   - Every record includes `updated_at` timestamp and client identifier
+   - On synchronization, timestamps determine which version prevails
+   - Special rules apply for official scorers and critical tournament data
+
+2. **Edge Case Handling**
+   ```
+   ┌─────────────────────┐     ┌─────────────────────┐     ┌─────────────────────┐
+   │                     │     │                     │     │                     │
+   │  Special Priority   │     │  Field-Level        │     │  Tournament Status  │
+   │  for Officials      │     │  Merging            │     │  Transition Rules   │
+   │                     │     │                     │     │                     │
+   └─────────────────────┘     └─────────────────────┘     └─────────────────────┘
+   ```
+
+3. **User Experience Considerations**
+   - Conflict notifications for significant discrepancies
+   - Transparent audit trail of changes
+   - Guided conflict resolution for extensive offline edits
+
+### Enhanced Resolution Mechanisms
+
+For complex scenarios, we have implemented additional resolution strategies:
+
+1. **Score Validation-Aware Resolution**
+   - Validates scores against tournament rules during conflict resolution
+   - Preserves valid scores over invalid ones regardless of timestamp
+   - Computes nearest valid score when both versions are invalid
+
+2. **Multi-Device Synchronization**
+   - Special handling for the same user editing from multiple devices
+   - Enhanced merging for different fields modified on different devices
+   - User notifications when cross-device merges occur
+
+3. **Connectivity-Aware Sync Process**
+   - Reliable batch processing with retry mechanisms
+   - Transaction logging for recovery from interrupted syncs
+   - Bandwidth-efficient incremental synchronization
+
+### Future Resolution Enhancements
+
+As the application evolves, we are implementing more sophisticated conflict resolution capabilities:
+
+1. **Interactive Conflict Resolution UI**
+   - Manual conflict resolution interface for critical conflicts
+   - Visual diff tools to help users understand changes
+   - Guided resolution workflow for complex conflict scenarios
+
+2. **Optimistic Concurrency Control**
+   - Version-based concurrency for more precise conflict detection
+   - Database triggers to enforce version consistency
+   - Client-side version tracking for offline operations
+
+3. **Advanced Merge Strategies**
+   - Object-structure-aware deep merging for complex data
+   - Array handling with add/remove/modify detection
+   - Field-level timestamp tracking for granular conflict resolution
+
+4. **Cryptographic Audit Trail**
+   - Blockchain-inspired append-only change log
+   - Cryptographic verification of change history integrity
+   - Complete audit capabilities for tournament record verification
+
+For complete implementation details and code examples, refer to our [Conflict Resolution Strategy](conflict-resolution-strategy.md) document.
+
 ## Deployment and CI/CD Pipeline
 
 1. **GitHub Actions Workflows**
@@ -187,7 +337,7 @@ For enterprise-scale deployment (10,000+ users), a full microservices architectu
 ┌─────────────────────┐           ┌───────────────────────────┐           ┌─────────────────────┐
 │                     │           │                           │           │                     │
 │  Azure API          │◄─────────►│  Azure Container Apps     │◄─────────►│  Azure Redis Cache  │
-│  Management         │           │  - API Gateway            │           │  - Response Caching │
+│  Management         │           │  - API Services           │           │  - Response Caching │
 │  - API Documentation│           │  - Authentication         │           │  - Session Storage  │
 │  - Developer Portal │           │  - Rate Limiting          │           │  - Distributed Cache│
 │  - Subscription Mgmt│           │  - Request Routing        │           │                     │
@@ -212,9 +362,9 @@ For enterprise-scale deployment (10,000+ users), a full microservices architectu
 │                     │                     │                     │                     │     │
 │  Notification       │  Analytics Service  │  Content Management │  Payment Service    │     │
 │  Service            │  (Container App)    │  Service            │  (Container App)    │     │
-│  (Container App)    │  - User Behavior    │  (Container App)    │  - Subscription     │     │
-│  - Push Notifications│ - Business Intel   │  - Media Management │  - Tournament Fees  │     │
-│  - Email            │  - Reporting        │  - Templates        │  - Payment Processor│     │
+│  (Container App)    │  - User Behavior    │  - Media Management │  - Subscription     │     │
+│  - Push Notifications│ - Business Intel   │  - Templates        │  - Tournament Fees  │     │
+│  - Email            │  - Reporting        │  - Localization     │  - Payment Processor│     │
 │  - SMS              │  - ML Insights      │  - Localization     │  - Invoicing        │     │
 │                     │                     │                     │                     │     │
 └─────────────────────┴─────────────────────┴─────────────────────┴─────────────────────┘     │
@@ -356,6 +506,82 @@ This section outlines best practices for building robust, maintainable, and high
        ├── Models/                    # API-specific models
        └── Filters/                   # API filters
    ```
+
+### Testing Strategy
+
+### Supabase Testing Strategy
+
+Supabase integration testing requires special consideration, especially when using the free tier and testing real-time features. Our approach focuses on resilience, fallbacks, and comprehensive validation of Row-Level Security (RLS) policies.
+
+#### Testing RLS Policies
+
+1. **Local Policy Validation**
+   - PostgreSQL scripts that replicate our RLS policies for local testing
+   - Unit tests against these local policies with different user contexts
+   - Automated policy verification in CI/CD pipelines
+
+2. **Integration Testing Against Development Instance**
+   - Tests against a development Supabase instance
+   - Validation of access patterns for different user roles
+   - Negative test cases to confirm proper data isolation
+
+#### Real-Time Feature Testing
+
+1. **Mock-Based Testing**
+   - Mock implementations of Supabase real-time clients
+   - Unit tests for subscription setup, handling, and teardown
+   - Validation of application behavior with simulated events
+
+2. **Resilience Testing**
+   - Tests for fallback mechanisms when real-time connections fail
+   - Verification of reconnection strategies
+   - Validation of data synchronization after connection recovery
+
+3. **End-to-End Testing**
+   - Dedicated Supabase project for testing
+   - Automated tests for real-time subscriptions and event delivery
+   - Performance baseline establishment for the free tier
+
+4. **Free Tier Considerations**
+   - Usage tracking relative to free tier limits
+   - Implementation of graceful degradation when limits are approached
+   - Planned upgrade paths when usage grows
+
+For comprehensive details, see our [Supabase Testing Strategy](supabase-testing-strategy.md) document.
+
+### Frontend Testing Strategy
+
+1. **Component Testing**
+   - Unit tests for React components using React Testing Library
+   - Snapshot testing for UI stability
+   - Interaction testing for user flows
+
+2. **State Management Testing**
+   - Unit tests for state management logic
+   - Validation of state transitions
+   - Testing of selectors and reducers
+
+3. **End-to-End Testing**
+   - Cypress for full application flows
+   - Cross-browser compatibility testing
+   - Accessibility testing with axe-core
+
+### Backend Testing Strategy
+
+1. **Unit Testing**
+   - Tests for individual components (commands, queries, validators)
+   - Mock-based testing for external dependencies
+   - High coverage for business logic
+
+2. **Integration Testing**
+   - API endpoint testing with test clients
+   - Database interaction testing
+   - Authentication and authorization testing
+
+3. **Performance Testing**
+   - Load testing for API endpoints
+   - Benchmark tests for critical operations
+   - Memory usage and leak detection
 
 ### CQRS with MediatR Implementation
 

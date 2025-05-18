@@ -22,12 +22,11 @@ Based on the comprehensive analysis of the project's evolution and the insights 
   - Context-aware UI that adapts to user role and device
 
 ### Backend Architecture
-- **API Gateway**
-  - Node.js Express-based API gateway
+- **API Services**
+  - Azure Functions (.NET 8) for backend services
   - JWT validation middleware for Supabase tokens
-  - Request routing and load balancing
-  - Caching layer for performance
-  - Rate limiting for service protection
+  - Consumption plan for cost optimization
+  - Autoscaling based on demand
 
 - **Supabase Integration**
   - Authentication via Supabase Auth
