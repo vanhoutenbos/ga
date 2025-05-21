@@ -1,0 +1,128 @@
+Consistent Error Response Format (API)
+
+// MOVED TO MAIN DOC: See 'TODOs and Open Questions' in project-structure-and-implementation.md
+
+Frontend: Retry/Backoff for API Calls
+
+// MOVED TO MAIN DOC: See 'TODOs and Open Questions' in project-structure-and-implementation.md
+
+Frontend: Circuit Breaker/Fail Fast
+
+// MOVED TO MAIN DOC: See 'TODOs and Open Questions' in project-structure-and-implementation.md
+
+Backend: Correlation IDs
+
+// MOVED TO MAIN DOC: See 'TODOs and Open Questions' in project-structure-and-implementation.md
+
+Monitoring and Alerting
+
+// MOVED TO MAIN DOC: See 'TODOs and Open Questions' in project-structure-and-implementation.md
+
+API Gateway/Rate Limiting Errors
+
+// MOVED TO MAIN DOC: See 'TODOs and Open Questions' in project-structure-and-implementation.md
+
+Documentation
+
+// MOVED TO MAIN DOC: See 'TODOs and Open Questions' in project-structure-and-implementation.md
+
+Data Migration & Backup Strategy
+
+Your backup strategy starts with an SQL approach, but implementation details are light
+How frequently will backups run?
+How will you test restore procedures?
+What's the retention policy for backups?
+
+CI/CD for Database Changes
+
+How will database schema changes be managed in your CI/CD pipeline?
+Strategy for handling breaking schema changes
+Edge Functions Usage
+
+You mention Supabase Edge Functions but don't detail specific use cases
+Which operations will be implemented as Edge Functions versus in your Azure Functions?
+
+Azure Functions Details: 
+How will your Azure Functions (.NET 8) integrate with Supabase? 
+What caching strategies will you implement at the API level when you scale up?
+
+Questions for Clarification
+
+
+
+Disaster Recovery Testing: While you cover extensive performance and load testing, I don't see specific scenarios for disaster recovery testing. How would your application recover if Supabase were to experience extended downtime?
+
+Compliance and Data Residency: For applications with users in different geographical regions, how are you handling data residency requirements and compliance with regulations like GDPR or CCPA?
+
+Upgrade Planning: Supabase regularly releases new versions with breaking changes. Do you have a strategy for testing and upgrading when new Supabase versions are released?
+
+Cross-Browser/Device Testing: While you have extensive backend testing, how are you validating that the Supabase realtime features work consistently across different browsers and devices?
+
+Cost Projection: You mention free tier constraints frequently, but do you have a model for projecting costs if you were to exceed free tier limits? How would costs scale with your current architecture?
+
+1. CI/CD Pipeline
+I don't see detailed documentation about your CI/CD pipeline strategy. While you have an Azure pipeline reference in the old codebase, a modern CI/CD approach for the new stack would be beneficial.
+
+Question: Have you established a CI/CD pipeline for your new architecture with .NET 8 and React? If so, could you describe it or where it's documented?
+
+2. API Versioning Strategy
+API versioning is crucial for maintaining backward compatibility as your application evolves.
+
+Question: Do you have a documented strategy for API versioning and backward compatibility, especially for tournament data which might need to evolve over time?
+
+3. Performance Testing for Azure Functions
+While you have documentation on Azure Functions performance optimization and Supabase load testing, I don't see specific performance testing methodologies for your Azure Functions.
+
+Question: Have you documented specific performance testing approaches for your Azure Functions, especially under varying loads during tournaments?
+
+4. Access Control Implementation Details
+I see you're using Supabase Row-Level Security, but I'm curious about the specific implementation details.
+
+Question: Could you elaborate on how you're implementing role-based access control across different levels of tournaments (organizers, players, spectators) using Supabase RLS policies?
+
+5. Disaster Recovery and Backup Strategy
+While there's extensive documentation on monitoring, I don't see explicit disaster recovery procedures.
+
+Question: What is your backup and restore strategy for both Supabase data and any other persistent storage you're using?
+
+6. Client-Side State Management
+With real-time features, offline capabilities, and multi-user editing, state management becomes complex.
+
+Question: Which state management approach are you using in your React frontend (Redux, Context API, React Query, etc.), and how does it handle syncing with Supabase real-time updates?
+
+7. DevOps Environment Separation
+Your cost plans mention different environments, but I don't see explicit documentation on environment separation.
+
+Question: How are you separating your development, staging, and production environments, particularly for Supabase resources?
+
+8. Security and Compliance Documentation
+Given golf tournaments may involve payments and personal information, security documentation is important.
+
+Question: Do you have documentation on security measures, data protection compliance, and audit logs, especially for any potential payment processing?
+
+9. API Documentation and OpenAPI/Swagger Integration
+I don't see explicit API documentation strategy for your backend APIs.
+
+Question: Are you using OpenAPI/Swagger or another approach to document your APIs for both internal and potential third-party integrations?
+
+10. Supabase Limits & Migration: Is your migration plan for outgrowing Supabase’s free/pro tiers (e.g., moving to self-hosted Postgres) fully documented and tested?
+
+11. Mobile UX Edge Cases: How will you handle device/browser-specific quirks, especially for offline and PWA installability?
+
+12. Real-Time Scaling: How will you handle real-time updates at scale (e.g., 1000+ concurrent users in a tournament)?
+
+13. Monitoring & Alerting: Are your monitoring/alerting strategies for both frontend and backend (App Insights, logs, errors) fully automated and actionable?
+
+14. Security Audits: Have you planned for regular security reviews, dependency scanning, and penetration testing?
+
+15. Accessibility: Is there a plan for full accessibility (WCAG) compliance, especially for public-facing features?
+
+16. User Support & Feedback: How will you collect and act on user feedback post-launch?
+
+17. Documentation for Contributors: Is there a clear onboarding guide for new developers/contributors?
+
+18. API Rate Limiting & Abuse Prevention: How will you prevent API abuse, especially for public endpoints?
+
+19. Multi-Tenancy Isolation: Are there tests and guarantees for strict tenant data isolation at all layers?
+
+20. Automated Data Migrations: How will you handle schema changes and data migrations in production?

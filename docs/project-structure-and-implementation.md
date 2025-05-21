@@ -16,6 +16,8 @@ This document outlines the detailed project structure and implementation approac
 10. [CI/CD Pipeline](#cicd-pipeline)
 11. [Testing Strategy](#testing-strategy)
 12. [Performance Optimization](#performance-optimization)
+13. [Planned Caching and Performance Optimization (Future Version)](#planned-caching-and-performance-optimization-future-version)
+14. [TODOs and Open Questions](#todos-and-open-questions)
 
 ## Technology Stack
 
@@ -2088,4 +2090,161 @@ export const LeaderboardTable = ({ leaderboard, scoreFormat, isLoading }) => {
 };
 ```
 
-This comprehensive implementation plan provides a detailed roadmap for developing the Golf Tournament Organizer application, covering all key aspects of the frontend and backend implementation, and addressing the core requirements of the project.
+## Planned Caching and Performance Optimization (Future Version)
+
+To ensure scalability and optimal performance as the user base grows, the following caching strategies are planned for future versions of the Golf Tournament Organizer application:
+
+### Redis Caching
+- **When to Implement:**
+  - Redis caching will be introduced when the application reaches a scale of approximately 50 or more organizations, or when database load/latency becomes a concern.
+- **What to Cache:**
+  - Forward-viewed data (e.g., upcoming tournaments, schedules, public event data).
+  - Organization-shared data that is frequently accessed by multiple users within the same organization.
+- **How to Implement:**
+  - Integrate Redis as a distributed cache layer in the backend (Azure Functions/.NET 8).
+  - Use Redis for caching the results of expensive or frequently repeated queries.
+  - Set appropriate cache expiration and invalidation strategies to ensure data consistency.
+- **Benefits:**
+  - Reduces load on the PostgreSQL database.
+  - Improves response times for high-traffic endpoints.
+
+### Output Caching for Anonymous Data
+- **Scope:**
+  - Output caching will be applied to all anonymous/public data that is the same for all users, such as leaderboards, tournament results, and public event listings.
+- **Strategy:**
+  - Cache rendered output or API responses for endpoints serving anonymous data.
+  - Use short-to-medium cache durations (e.g., 30 seconds to 5 minutes) depending on the data volatility.
+  - Invalidate or refresh the cache when underlying data changes (e.g., new scores submitted).
+- **Benefits:**
+  - Significantly reduces backend processing for high-traffic, read-heavy endpoints.
+  - Ensures fast and consistent user experience for public/unauthenticated users.
+
+### Planned Rate Limiting Strategy
+
+To protect backend resources and ensure fair usage as the platform scales, rate limiting will be implemented as follows:
+
+- **Preferred Approach:**
+  - Use a managed API Gateway (e.g., Azure API Management) in front of the backend services (Azure Functions, Supabase, or future containers).
+  - API Gateway provides configurable, per-user or per-IP rate limiting, burst control, and analytics with minimal operational overhead.
+  - This approach is cloud-native, works with both serverless and containerized deployments, and can be adjusted without code changes.
+
+- **Alternative (if moving to containers):**
+  - If the backend is migrated to containers, rate limiting could be enforced at the ingress/load balancer layer (e.g., NGINX, Envoy, Azure Application Gateway).
+  - This requires additional configuration and may not offer the same flexibility or observability as a managed API Gateway.
+
+- **Implementation Plan:**
+  - Start with API Gateway-based rate limiting for all public and authenticated API endpoints.
+  - Define sensible defaults (e.g., X requests per minute per IP/user) and adjust as usage grows.
+  - Monitor rate limit metrics and tune policies as needed.
+  - Document rate limit policies for API consumers.
+
+- **Rationale:**
+  - API Gateway is recommended for its simplicity, flexibility, and integration with cloud monitoring and security features.
+  - Load balancer/ingress-based rate limiting is only considered if there are specific container orchestration requirements.
+
+This strategy ensures the platform remains reliable and secure as adoption increases.
+
+### Monitoring and Review
+- Regularly monitor cache hit/miss rates and database performance.
+- Adjust caching strategies and durations as usage patterns evolve.
+- Document cache keys and invalidation logic for maintainability.
+
+These enhancements will be prioritized as the application scales and will be revisited periodically to ensure optimal performance and cost efficiency.
+
+## TODOs and Open Questions (as of May 2025)
+
+This section tracks open technical and architectural TODOs, as well as questions for clarification. See `docs/todo.txt` for the full list and context.
+
+### API Consistency and Error Handling
+- Ensure all API endpoints return a consistent error envelope (e.g., ProblemDetails) for both expected and unexpected errors.
+- Document error codes/messages for API consumers.
+
+### Frontend Resilience
+- For critical API calls, add automatic retry with exponential backoff for transient errors (e.g., 429, 5xx). Use a library or custom hook for this pattern.
+- Consider a circuit breaker pattern in the frontend to avoid spamming the backend and to show a “service unavailable” message during repeated failures.
+- Make sure rate limiting errors (429) are handled gracefully in the frontend, with user feedback and retry/backoff.
+
+### Backend Observability
+- Include correlation/request IDs in logs and error responses to help trace issues across distributed systems.
+- Ensure that error reporting hooks into your monitoring/alerting stack (e.g., Application Insights, Sentry, etc.) and that critical errors trigger alerts.
+
+### Documentation
+- Document your error response formats and retry/backoff/circuit breaker policies for both internal and external consumers.
+
+### Data Migration & Backup Strategy
+- Expand documentation on backup frequency, restore testing, and retention policy for Supabase and other persistent storage.
+
+### CI/CD for Database Changes
+- Document how database schema changes are managed in your CI/CD pipeline, including handling of breaking changes.
+
+### Edge Functions Usage
+- Clarify which operations will be implemented as Supabase Edge Functions versus Azure Functions.
+
+### Azure Functions Integration
+- Document how Azure Functions (.NET 8) integrate with Supabase.
+- Document caching strategies at the API level for future scaling.
+
+### Disaster Recovery, Compliance, and Upgrade Planning
+- Add explicit disaster recovery procedures for Supabase and other critical services.
+- Document data residency and compliance (GDPR, CCPA, etc.) for multi-region users.
+- Add a strategy for testing and upgrading when new Supabase versions are released.
+
+### Cross-Browser/Device Testing
+- Document how Supabase realtime features are validated across browsers/devices.
+
+### Cost Projection
+- Add a model for projecting costs if exceeding free tier limits, and how costs scale with the current architecture.
+
+### API Versioning
+- Document your API versioning and backward compatibility strategy.
+
+### Performance Testing for Azure Functions
+- Document specific performance testing approaches for Azure Functions, especially under tournament load.
+
+### Access Control Implementation
+- Expand on Supabase RLS and role-based access control for tournaments (organizers, players, spectators).
+
+### State Management
+- Document the state management approach in React and how it syncs with Supabase realtime updates.
+
+### DevOps Environment Separation
+- Document how development, staging, and production environments are separated, especially for Supabase resources.
+
+### Security and Compliance
+- Add documentation on security measures, data protection compliance, and audit logs, especially for payment processing.
+
+### API Documentation
+- Document your API using OpenAPI/Swagger or another approach for both internal and third-party integrations.
+
+### Supabase Limits & Migration
+- Document and test your migration plan for outgrowing Supabase’s free/pro tiers (e.g., moving to self-hosted Postgres).
+
+### Mobile UX Edge Cases
+- Document how device/browser-specific quirks are handled, especially for offline and PWA installability.
+
+### Real-Time Scaling
+- Document how real-time updates will scale (e.g., 1000+ concurrent users in a tournament).
+
+### Monitoring & Alerting
+- Ensure monitoring/alerting strategies for frontend and backend are fully automated and actionable.
+
+### Security Audits
+- Plan for regular security reviews, dependency scanning, and penetration testing.
+
+### Accessibility
+- Plan for full accessibility (WCAG) compliance, especially for public-facing features.
+
+### User Support & Feedback
+- Document how user feedback will be collected and acted on post-launch.
+
+### Contributor Documentation
+- Provide a clear onboarding guide for new developers/contributors.
+
+### API Rate Limiting & Abuse Prevention
+- Document how API abuse will be prevented, especially for public endpoints.
+
+### Multi-Tenancy Isolation
+- Document tests and guarantees for strict tenant data isolation at all layers.
+
+### Automated Data Migrations
+- Document how schema changes and data migrations are handled in production.
