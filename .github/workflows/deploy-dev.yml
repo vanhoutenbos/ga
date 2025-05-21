@@ -1,0 +1,195 @@
+name: Deploy to Development
+
+on:
+  push:
+    branches: [develop]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+
+jobs:
+  deploy-db:
+    name: Deploy Supabase Schema
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for comparing changes
+      
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      
+      - name: Login to Supabase
+        run: supabase login --token ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      
+      - name: Check for migration changes
+        id: changed-files
+        uses: tj-actions/changed-files@v35
+        with:
+          files: |
+            supabase/migrations/**
+            supabase/functions/**
+            supabase/triggers/**
+            supabase/policies/**
+      
+      - name: Apply migrations to development
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          echo "Detected changes in Supabase files, applying migrations..."
+          
+          # Link to the Supabase project
+          supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_ID_DEV }} --password ${{ secrets.SUPABASE_DB_PASSWORD_DEV }}
+          
+          # Push database changes (migrations, functions, triggers, policies)
+          supabase db push
+          
+          # Verify migrations were applied correctly
+          supabase db remote changes
+        
+      - name: Apply seed data (if needed)
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          # Only seed if we're in development and there are changes
+          if [ -f "supabase/seed/development.sql" ]; then
+            echo "Applying development seed data..."
+            supabase db execute --file supabase/seed/development.sql
+          fi
+          
+      - name: Deploy Edge Functions
+        if: contains(steps.changed-files.outputs.all_changed_files, 'supabase/functions/')
+        run: |
+          # Deploy all edge functions that have changed
+          supabase functions deploy
+
+  build-and-deploy-frontend:
+    name: Deploy Frontend App
+    runs-on: ubuntu-latest
+    environment: development
+    needs: deploy-db
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install Dependencies
+        run: npm ci
+        working-directory: ./src
+          
+      - name: Create .env file
+        run: |
+          cat > ./src/.env.production << EOF
+          REACT_APP_SUPABASE_URL=${{ secrets.SUPABASE_URL_DEV }}
+          REACT_APP_SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY_DEV }}
+          REACT_APP_API_URL=${{ secrets.AZURE_FUNCTIONS_URL_DEV }}
+          EOF
+          
+      - name: Build
+        run: npm run build
+        working-directory: ./src
+          
+      - name: Deploy to Azure Static Web Apps
+        id: deploy-to-azure-static-web-apps
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APP_TOKEN_DEV }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: "upload"
+          app_location: "src/build"  # Location of built files
+          skip_app_build: true  # We've already built the app
+          
+      - name: Report Deployment Status
+        if: always()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "${{ steps.deploy-to-azure-static-web-apps.outcome == 'success' && '✅' || '❌' }} Frontend deployment to dev: ${{ steps.deploy-to-azure-static-web-apps.outcome }}\nRepo: ${{ github.repository }}\nBranch: ${{ github.ref_name }}\nCommit: ${{ github.sha }}\nBy: ${{ github.actor }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  deploy-azure-functions:
+    name: Deploy Azure Functions
+    runs-on: ubuntu-latest
+    environment: development
+    needs: deploy-db
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+          
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: ./src/api
+        
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+        working-directory: ./src/api
+        
+      - name: Publish
+        run: dotnet publish --configuration Release --output ./publish
+        working-directory: ./src/api
+        
+      - name: Deploy to Azure Functions
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ secrets.AZURE_FUNCTIONAPP_NAME_DEV }}
+          package: './src/api/publish'
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE_DEV }}
+          
+      - name: Report Deployment Status
+        if: always()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "${{ job.status == 'success' && '✅' || '❌' }} Azure Functions deployment to dev: ${{ job.status }}\nRepo: ${{ github.repository }}\nBranch: ${{ github.ref_name }}\nCommit: ${{ github.sha }}\nBy: ${{ github.actor }}"
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          
+  post-deployment-verification:
+    name: Post-Deployment Verification
+    runs-on: ubuntu-latest
+    environment: development
+    needs: [build-and-deploy-frontend, deploy-azure-functions]
+    steps:
+      - name: Check Frontend Deployment
+        run: |
+          # Wait a moment for deployment to stabilize
+          sleep 30
+          
+          # Check if the frontend is accessible
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.FRONTEND_URL_DEV }})
+          
+          if [ $HTTP_STATUS -eq 200 ]; then
+            echo "Frontend deployment successful with HTTP status $HTTP_STATUS"
+          else
+            echo "Frontend deployment check failed with HTTP status $HTTP_STATUS"
+            exit 1
+          fi
+          
+      - name: Check Azure Functions
+        run: |
+          # Wait a moment for deployment to stabilize
+          sleep 30
+          
+          # Check if the API is accessible (health check endpoint)
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.AZURE_FUNCTIONS_URL_DEV }}/api/health)
+          
+          if [ $HTTP_STATUS -eq 200 ]; then
+            echo "Azure Functions deployment successful with HTTP status $HTTP_STATUS"
+          else
+            echo "Azure Functions deployment check failed with HTTP status $HTTP_STATUS"
+            exit 1
+          fi

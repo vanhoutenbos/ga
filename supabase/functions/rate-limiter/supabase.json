@@ -1,0 +1,11 @@
+{
+  "name": "rate-limiter",
+  "version": "1.0.0",
+  "description": "API rate limiting middleware for the Golf Tournament Organizer",
+  "entrypoint": "index.ts",
+  "vercel": {
+    "includeFiles": [
+      "index.ts"
+    ]
+  }
+}

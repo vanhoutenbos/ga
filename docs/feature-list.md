@@ -175,4 +175,66 @@ To dominate the market:
 
 ---
 
+
+## Planned Caching and Performance Optimization (Future Version)
+
+To ensure scalability and optimal performance as the user base grows, the following caching strategies are planned for future versions of the Golf Tournament Organizer application:
+
+### Redis Caching
+- **When to Implement:**
+  - Redis caching will be introduced when the application reaches a scale of approximately 50 or more organizations, or when database load/latency becomes a concern.
+- **What to Cache:**
+  - Forward-viewed data (e.g., upcoming tournaments, schedules, public event data).
+  - Organization-shared data that is frequently accessed by multiple users within the same organization.
+- **How to Implement:**
+  - Integrate Redis as a distributed cache layer in the backend (Azure Functions/.NET 8).
+  - Use Redis for caching the results of expensive or frequently repeated queries.
+  - Set appropriate cache expiration and invalidation strategies to ensure data consistency.
+- **Benefits:**
+  - Reduces load on the PostgreSQL database.
+  - Improves response times for high-traffic endpoints.
+
+### Output Caching for Anonymous Data
+- **Scope:**
+  - Output caching will be applied to all anonymous/public data that is the same for all users, such as leaderboards, tournament results, and public event listings.
+- **Strategy:**
+  - Cache rendered output or API responses for endpoints serving anonymous data.
+  - Use short-to-medium cache durations (e.g., 30 seconds to 5 minutes) depending on the data volatility.
+  - Invalidate or refresh the cache when underlying data changes (e.g., new scores submitted).
+- **Benefits:**
+  - Significantly reduces backend processing for high-traffic, read-heavy endpoints.
+  - Ensures fast and consistent user experience for public/unauthenticated users.
+
+### Planned Rate Limiting Strategy
+
+To protect backend resources and ensure fair usage as the platform scales, rate limiting will be implemented as follows:
+
+- **Preferred Approach:**
+  - Use a managed API Gateway (e.g., Azure API Management) in front of the backend services (Azure Functions, Supabase, or future containers).
+  - API Gateway provides configurable, per-user or per-IP rate limiting, burst control, and analytics with minimal operational overhead.
+  - This approach is cloud-native, works with both serverless and containerized deployments, and can be adjusted without code changes.
+
+- **Alternative (if moving to containers):**
+  - If the backend is migrated to containers, rate limiting could be enforced at the ingress/load balancer layer (e.g., NGINX, Envoy, Azure Application Gateway).
+  - This requires additional configuration and may not offer the same flexibility or observability as a managed API Gateway.
+
+- **Implementation Plan:**
+  - Start with API Gateway-based rate limiting for all public and authenticated API endpoints.
+  - Define sensible defaults (e.g., X requests per minute per IP/user) and adjust as usage grows.
+  - Monitor rate limit metrics and tune policies as needed.
+  - Document rate limit policies for API consumers.
+
+- **Rationale:**
+  - API Gateway is recommended for its simplicity, flexibility, and integration with cloud monitoring and security features.
+  - Load balancer/ingress-based rate limiting is only considered if there are specific container orchestration requirements.
+
+This strategy ensures the platform remains reliable and secure as adoption increases.
+
+### Monitoring and Review
+- Regularly monitor cache hit/miss rates and database performance.
+- Adjust caching strategies and durations as usage patterns evolve.
+- Document cache keys and invalidation logic for maintainability.
+
+These enhancements will be prioritized as the application scales and will be revisited periodically to ensure optimal performance and cost efficiency.
+
 _This feature list is maintained as a living document for The Golf App team. Last updated: May 17, 2025._

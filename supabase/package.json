@@ -1,0 +1,17 @@
+{
+  "name": "golf-app-supabase-tools",
+  "version": "1.0.0",
+  "description": "Tools for managing Supabase setup for The Golf App",
+  "scripts": {
+    "setup": "node scripts/local-setup.js",
+    "migrate": "node scripts/migrate.js",
+    "setup-project": "node scripts/setup-project.js",
+    "sync-env": "node scripts/sync-environments.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0",
+    "dotenv": "^16.3.1"
+  }
+}
