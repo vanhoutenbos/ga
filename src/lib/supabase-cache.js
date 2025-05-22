@@ -8,8 +8,8 @@ import * as localforage from 'localforage';
  * CacheableSupabase extends the standard Supabase client with caching capabilities
  */
 export class CacheableSupabase {
-  private supabaseClient;
-  private cache;
+  supabaseClient;
+  cache;
 
   /**
    * Constructor for the CacheableSupabase client
@@ -156,7 +156,7 @@ export class CacheableSupabase {
    * @param key The cache key
    * @param data The data to cache
    */
-  private async saveToCache(key, data) {
+  async saveToCache(key, data) {
     await this.cache.setItem(key, {
       data,
       timestamp: Date.now()
@@ -167,7 +167,7 @@ export class CacheableSupabase {
    * Get data from the cache
    * @param key The cache key
    */
-  private async getFromCache(key) {
+  async getFromCache(key) {
     return await this.cache.getItem(key);
   }
 
@@ -176,7 +176,7 @@ export class CacheableSupabase {
    * @param cachedData The cached data object
    * @param ttlSeconds Time to live in seconds
    */
-  private isCacheValid(cachedData, ttlSeconds) {
+  isCacheValid(cachedData, ttlSeconds) {
     const now = Date.now();
     const expiryTime = cachedData.timestamp + (ttlSeconds * 1000);
     return now < expiryTime;

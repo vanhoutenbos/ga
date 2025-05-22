@@ -1,0 +1,14 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
+    "Supabase:Url": "YOUR_SUPABASE_URL",
+    "Supabase:Key": "YOUR_SUPABASE_KEY",
+    "Supabase:Secret": "YOUR_SUPABASE_SECRET",
+    "Supabase:JwtSecret": "YOUR_JWT_SECRET",
+    "Supabase:JwtIssuer": "https://your-project.supabase.co/auth/v1",
+    "Redis:ConnectionString": "YOUR_REDIS_CONNECTION_STRING",
+    "AllowedOrigins": "http://localhost:3000,https://your-production-url.com"
+  }
+}

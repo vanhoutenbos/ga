@@ -1,7 +1,7 @@
 // Supabase Edge Function for API rate limiting
 // This function serves as a middleware for API rate limiting
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.0';
+import { createClient } from '@supabase/supabase-js';
 
 // Define rate limit configurations by endpoint type
 const rateLimits = {
@@ -46,8 +46,8 @@ export async function serve(req) {
     
     // Create Supabase client
     const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      process.env.SUPABASE_URL ?? '',
+      process.env.SUPABASE_ANON_KEY ?? '',
       {
         global: { headers: { Authorization: req.headers.get('Authorization') ?? '' } },
         auth: { persistSession: false }
@@ -55,7 +55,7 @@ export async function serve(req) {
     );
     
     // Get the current user if authenticated
-    let userId = null;
+    let userId: string | null = null;
     const authHeader = req.headers.get('Authorization');
     
     if (authHeader) {
