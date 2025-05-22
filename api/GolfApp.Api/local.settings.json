@@ -1,5 +1,8 @@
 {
   "IsEncrypted": false,
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=db.lbakerwokfxxosnjzxql.supabase.co;Database=postgres;Username=postgres;Password=[YOUR-PASSWORD];SSL Mode=Require;Trust Server Certificate=true"
+  },
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",

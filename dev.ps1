@@ -122,12 +122,20 @@ switch ($command) {
   "deploy-dev" {
     Write-Host "Deploying to development environment..." -ForegroundColor Cyan
     
-    if (-not $env:SUPABASE_DEV_PROJECT_ID -or -not $env:SUPABASE_ACCESS_TOKEN) {
+  if (-not $env:SUPABASE_DEV_PROJECT_ID -or -not $env:SUPABASE_ACCESS_TOKEN) {
       Write-Host "Error: Missing required environment variables." -ForegroundColor Red
       Write-Host "Please set SUPABASE_DEV_PROJECT_ID and SUPABASE_ACCESS_TOKEN." -ForegroundColor Yellow
       Write-Host "You can set these by running:" -ForegroundColor Yellow
       Write-Host '$env:SUPABASE_DEV_PROJECT_ID = "your-project-id"' -ForegroundColor Gray
-      Write-Host '$env:SUPABASE_ACCESS_TOKEN = "your-access-token"' -ForegroundColor Gray
+      Write-Host '$env:SUPABASE_ACCESS_TOKEN = "sbp_01234567890123456789"' -ForegroundColor Gray
+      exit 1
+    }
+    
+    # Validate access token format
+    if (-not ($env:SUPABASE_ACCESS_TOKEN -match "^sbp_[a-zA-Z0-9]+$")) {
+      Write-Host "Error: Invalid access token format." -ForegroundColor Red
+      Write-Host "The token must start with 'sbp_' followed by alphanumeric characters." -ForegroundColor Yellow
+      Write-Host "Please visit https://supabase.com/dashboard/account/tokens to create a valid access token." -ForegroundColor Yellow
       exit 1
     }
     
@@ -141,7 +149,12 @@ switch ($command) {
     } catch {
       $errorMessage = $_.Exception.Message
       Write-Host "Error: Supabase CLI not found or not working properly." -ForegroundColor Red
-      Write-Host "Please install it with: npm install -g supabase" -ForegroundColor Yellow
+      Write-Host "Please install it using one of these methods:" -ForegroundColor Yellow
+      Write-Host "- Windows (Scoop): scoop install supabase" -ForegroundColor Yellow
+      Write-Host "- Windows (Chocolatey): choco install supabase-cli" -ForegroundColor Yellow
+      Write-Host "- Windows (Direct): Download from https://github.com/supabase/cli/releases" -ForegroundColor Yellow
+      Write-Host "- Windows (WinGet): winget install Supabase.CLI" -ForegroundColor Yellow
+      Write-Host "For more details, visit: https://supabase.com/docs/guides/cli" -ForegroundColor Yellow
       exit 1
     }
     

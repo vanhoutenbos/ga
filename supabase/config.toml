@@ -1,39 +1,15 @@
-# Supabase Project Configuration
-# This is loaded by the Supabase CLI
-
-project_id = "your-project-id"  # Replace with actual project ID for each environment
+# Project configuration for Supabase CLI
+project_id = ""
 
 [api]
-# API Configuration
 port = 54321
-schemas = ["public", "storage", "auth"]
-extra_search_path = ["public", "extensions"]
-max_rows = 1000
 
 [db]
-# Database Configuration
-port = 5432
-major_version = 15  # PostgreSQL version
+port = 54322
 
 [studio]
-# Studio Configuration
-port = 3000
+port = 54323
 
-[auth]
-# Auth Configuration
-site_url = "http://localhost:3000"
-additional_redirect_urls = ["https://localhost:3000", "https://the-golfapp.com"]
-autoconfirm = false
-enable_signup = true
-
-[storage]
-# Storage Configuration
-file_size_limit = "50MiB"
-
+# Functions configuration with proper nesting
 [functions]
-# Edge Functions Configuration
-serve_port = 54321
-
-[realtime]
-# Realtime Configuration
-enabled = true
+serve = { port = 8000 }

@@ -1,0 +1,33 @@
+# A minimal Supabase configuration file
+
+# Database configuration
+[db]
+port = 5432
+major_version = 15
+
+# API configuration 
+[api]
+port = 54321
+schemas = ["public", "storage", "auth"]
+extra_search_path = ["public", "extensions"]
+
+# Studio configuration
+[studio]
+port = 54323
+
+# Auth configuration
+[auth]
+site_url = "http://localhost:3000"
+additional_redirect_urls = ["https://localhost:3000", "https://the-golfapp.com"]
+
+# Edge Functions configuration
+[functions]
+port = 54321
+
+# Storage configuration
+[storage]
+file_size_limit = "50MiB"
+
+# Realtime configuration
+[realtime]
+enabled = true
