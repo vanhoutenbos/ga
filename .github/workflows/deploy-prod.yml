@@ -28,7 +28,7 @@ jobs:
       
       - name: Check for migration changes since last production deployment
         id: changed-files
-        uses: tj-actions/changed-files@v35
+        uses: tj-actions/changed-files@v46
         with:
           files: |
             supabase/migrations/**
